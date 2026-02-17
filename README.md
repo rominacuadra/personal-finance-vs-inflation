@@ -1,4 +1,4 @@
-# bugget-vs-inflation
+# personal-finance-vs-inflation
 
 ## 🎯 Objective
 Analyze personal expenses during 2024–2025 and compare them with official inflation data (INDEC). The goal is to understand:
