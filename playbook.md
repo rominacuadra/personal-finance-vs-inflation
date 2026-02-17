@@ -12,13 +12,19 @@ Analyze personal expenses during 2024–2025 and compare them with official infl
 
 ## 🧩 Methodology
 1. **Data Collection**
-   - Import anonymized personal expense records (2024–2025).
-   - Gather official CPI data from INDEC by category.
+   - Personal expenses for 2024 are stored in a CSV file: [`data/expenses_2024.csv`](data/expenses_2024.csv).
+     - ![Preview of expenses_2024.csv](docs/images/expenses_2024_preview.png)
+   - Personal expenses for 2025 are stored in a CSV file: [`data/expenses_2025.csv`](data/expenses_2025.csv).
+     - ![Preview of expenses_2025.csv](docs/images/expenses_2025_preview.png)
+   - Official CPI data from Argentina (INDEC) is stored in a CSV file: [`data/cpi_indec.csv`](data/cpi_indec.csv).
+     - ![Preview of cpi_indec.csv](docs/images/cpi_indec_preview.png)
 
 2. **Data Cleaning & Preparation**
    - Normalize formats (dates, categories, amounts).
    - Ensure consistency across datasets.
    - Apply privacy-preserving scaling to anonymize values.
+   - Raw data is initially stored in CSV format (`expenses_2024.csv`, `expenses_2025.csv`, `cpi_indec.csv`) for reproducibility.
+   - Cleaned data is then imported into Excel or Google Sheets (`analysis/finance_dashboard.xlsx`) to build pivot tables, charts, and interactive filters, showcasing advanced dashboarding skills.
 
 3. **Analysis**
    - Descriptive analysis: spending by category, monthly evolution.
