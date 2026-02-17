@@ -1,12 +1,7 @@
 # personal-finance-vs-inflation
 
 ## 🎯 Objective
-Analyze personal expenses during 2024–2025 and compare them with official inflation data (INDEC). The goal is to understand:
-- Which categories concentrate most expenses.
-- How monthly spending evolves.
-- Whether expenses follow overall inflation and category-specific CPI.
-- If spending limits are respected.
-- What adjustments should be made considering projected inflation.
+Analyze personal expenses during 2024–2025 and compare them with official inflation data from Argentina (INDEC – National Institute of Statistics and Censuses). The goal is to understand spending patterns, inflation impact by category, and compliance with predefined limits to provide actionable financial insights.
 
 ## 📂 Repository Structure
 - `data/`: anonymized datasets and external CPI data.
