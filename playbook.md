@@ -1,58 +1,74 @@
 # Playbook: Personal Finance vs Inflation (2024–2025)
 
 ## 🎯 Objectives
-Analyze personal expenses during 2024–2025 and compare them with official inflation data from Argentina (published by INDEC, the National Institute of Statistics and Censuses). The goal is to understand:
-- Which categories concentrate most expenses.
-- How monthly spending evolves.
-- Whether expenses follow overall inflation and category-specific Consumer Price Index (CPI).
-- If spending limits are respected.
-- What adjustments should be made considering projected inflation.
+The project aims to analyze personal expenses during 2024–2025 and compare them with official inflation data from Argentina (INDEC).  
+Key questions include:  
+- Which categories and subcategories show the highest spending growth?  
+- How does personal spending compare to official inflation rates?  
+- Are predefined spending limits respected?  
+- What adjustments could help mitigate the impact of inflation in the coming months?  
 
 ---
 
 ## 🧩 Methodology
-1. **Data Collection**
-   - Personal expenses for 2024 are stored in a CSV file: [`data/expenses_2024.csv`](data/expenses_2024.csv).
-     - ![Preview of expenses_2024.csv](docs/images/expenses_2024_preview.png)
-   - Personal expenses for 2025 are stored in a CSV file: [`data/expenses_2025.csv`](data/expenses_2025.csv).
-     - ![Preview of expenses_2025.csv](docs/images/expenses_2025_preview.png)
-   - Official CPI data from Argentina (INDEC) is stored in a CSV file: [`data/cpi_indec.csv`](data/cpi_indec.csv).
-     - ![Preview of cpi_indec.csv](docs/images/cpi_indec_preview.png)
 
-2. **Data Cleaning & Preparation**
-   - Normalize formats (dates, categories, amounts).
-   - Ensure consistency across datasets.
-   - Apply privacy-preserving scaling to anonymize values.
-   - Raw data is initially stored in CSV format (`expenses_2024.csv`, `expenses_2025.csv`, `cpi_indec.csv`) for reproducibility.
-   - Cleaned data is then imported into Excel or Google Sheets (`analysis/finance_dashboard.xlsx`) to build pivot tables, charts, and interactive filters, showcasing advanced dashboarding skills.
+### 1. Preparation
+- **Data sources**:  
+  - Personal expenses for 2024 stored in monthly CSV files inside the folder `data/2024/`.  
+  - Personal expenses for 2025 stored in monthly CSV files inside the folder `data/2025/`.  
+  - Official CPI data from Argentina (INDEC) stored in `data/cpi_indec.csv`.  
+- **Storage and reproducibility**:  
+  - Raw data is kept in CSV format to ensure traceability.  
+  - Cleaned data is imported into Excel/Google Sheets (`analysis/finance_dashboard.xlsx`) to build pivot tables, charts, and interactive filters.  
+- **Initial decisions**:  
+  - April 2024 was excluded because it only contained two days of expenses.  
+  - *Total* was defined as the primary metric for all calculations.  
+  - Redundant columns (*Total Share*, *Share*) were removed to keep the focus on personal spending.  
 
-3. **Analysis**
-   - Descriptive analysis: spending by category, monthly evolution.
-   - Comparative analysis: expenses vs CPI inflation.
-   - Evaluation of spending limits compliance.
-   - Projection: estimate future expenses adjusted for inflation.
+### 2. Process
+- **Anonymization of sensitive data**:  
+  - Specific values (names, merchants, payment methods) were replaced with generic terms to preserve privacy.  
+- **Column review and order**:  
+  - A standard column order was established to integrate them into the *master* sheet.  
+- **Text and spelling corrections**:  
+  - Categories and descriptions were adjusted to avoid typographical inconsistencies.  
+- **Handling missing or inconsistent data**:  
+  - Irrelevant records were removed.  
+  - Incomplete values were filled with estimates or marked as “NA”.  
+- **Duplicate detection and removal**:  
+  - Repeated records were filtered and consolidated as appropriate.  
+- **Format normalization**:  
+  - Dates standardized (DD/MM/YYYY).  
+  - Amounts homogenized with a single decimal separator.  
+  - Categories aligned with official CPI categories to enable comparisons.  
 
-4. **Visualization**
-   - Excel dashboard with pivot tables, charts, and slicers.
-   - Highlight key categories and trends.
+### 3. Analysis
+- Descriptive analysis: spending by category, monthly evolution.  
+- Comparative analysis: expenses vs CPI inflation.  
+- Evaluation of compliance with spending limits.  
+- Projection: estimate future expenses adjusted for inflation.  
+
+### 4. Visualization
+- Excel dashboard with pivot tables, charts, and slicers.  
+- Highlight key categories and trends.  
 
 ---
 
-## 📊 Results (to be completed)
-- Spending distribution by category.
-- Monthly spending evolution vs inflation.
-- Categories exceeding spending limits.
-- Projection of next month’s expenses.
+## 📊 Results (to be completed)  
+- Spending distribution by category.  
+- Monthly spending evolution vs inflation.  
+- Categories exceeding spending limits.  
+- Projection of next month’s expenses.  
 
 ---
 
-## ✅ Conclusions (to be completed)
-- Key insights about personal spending behavior.
-- Impact of inflation on different categories.
-- Recommendations for financial adjustments.
+## ✅ Conclusions (to be completed)  
+- Key insights about personal spending behavior.  
+- Impact of inflation on different categories.  
+- Recommendations for financial adjustments.  
 
 ---
 
-## 🚀 Next Steps
-- Scale analysis to Power BI for interactive dashboards.
-- Extend methodology to other datasets (e.g., household or industry benchmarks).
+## 🚀 Next Steps  
+- Scale analysis to Power BI for interactive dashboards.  
+- Extend methodology to other datasets (e.g., household or industry benchmarks).  
