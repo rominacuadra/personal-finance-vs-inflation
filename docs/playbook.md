@@ -7,9 +7,9 @@ The project analyzes personal expenses recorded between May 2024 and November 20
 **Did my personal spending keep pace with official inflation, or were there categories where the impact was significantly higher or lower than average?**
 
 From this question, the following analysis axes are derived:
-- Identify categories where spending grew above the official GBA inflation rate
-- Identify categories where spending remained below or in line with the CPI
-- Detect patterns that support financial protection decisions in future inflationary scenarios
+- Identify categories where spending grew above the official GBA inflation rate.
+- Identify categories where spending remained below or in line with the IPC.
+- Detect patterns that support financial protection decisions in future inflationary scenarios.
 
 ---
 
@@ -18,18 +18,18 @@ From this question, the following analysis axes are derived:
 ### 1. Preparation
 
 **Data sources**
-- Personal expenses from 2024 in monthly CSV files inside the `data/2024/` folder
-- Personal expenses from 2025 in monthly CSV files inside the `data/2025/` folder
-- Official CPI data from INDEC, obtained from https://www.indec.gob.ar/ftp/cuadros/economia/serie_ipc_divisiones.csv and storaged inside the `data/indec/` folder
+- Personal expenses from 2024 in monthly CSV files inside the `data/2024/` folder.
+- Personal expenses from 2025 in monthly CSV files inside the `data/2025/` folder.
+- Official IPC data from INDEC, obtained from https://www.indec.gob.ar/ftp/cuadros/economia/serie_ipc_divisiones.csv and storaged inside the [`data/indec/serie_ipc_divisiones.csv`](data/indec/serie_ipc_divisiones.csv).
 
 **Storage and reproducibility**
-- Raw data is maintained in CSV format to ensure traceability
-- Cleaned data is integrated into Google Sheets (`analysis/finance_dashboard.xlsx`) to build pivot tables, charts, and interactive filters
+- Raw data is maintained in CSV format to ensure traceability.
+- Cleaned data is integrated into Google Sheets [`analysis/finance_dashboard.xlsx`](analysis/finance_dashboard.xlsx) to build pivot tables, charts, and interactive filters.
 
 **Initial decisions**
-- April 2024 was excluded as it contained only two days of expenses
-- *Total* was defined as the primary metric for all calculations
-- Redundant columns (*Total Share*, *Share*) were removed to maintain focus on personal spending
+- April 2024 was excluded as it contained only two days of expenses.
+- *Total* was defined as the primary metric for all calculations.
+- Redundant columns (*Total Share*, *Share*) were removed to maintain focus on personal spending.
 
 ---
 
@@ -62,7 +62,7 @@ Data exported from Notion arrived in text format such as `ARS2,744.50`, includin
 The transformation process was as follows: replacement of non-breaking spaces with normal spaces, removal of the "ARS" currency prefix, removal of the thousands comma in English format, removal of residual spaces with TRIM, conversion of the decimal point to comma for Argentine format compatibility, and final conversion of the text to a numeric value with VALUE.
 
 **Format standardization**
-Dates were standardized to DD/MM/YYYY format and amounts to a single decimal separator. Categories were aligned with the official CPI divisions to enable subsequent comparison.
+Dates were standardized to DD/MM/YYYY format and amounts to a single decimal separator. Categories were aligned with the official IPC divisions to enable subsequent comparison.
 
 **Treatment of missing data**
 The following criteria were applied per affected column:
@@ -76,19 +76,19 @@ Repeated records were filtered and consolidated where applicable.
 
 **INDEC data integration**
 
-The historical CPI series was downloaded from:
+The historical IPC series was downloaded from:
 ```
 https://www.indec.gob.ar/ftp/cuadros/economia/serie_ipc_divisiones.csv
 ```
 The file was imported as the sheet `ipc_indec_raw` within the main analysis file.
 
-The sheet `categories_ipc_mapping` was created with the mapping between personal expense categories and INDEC CPI divisions. The categories Gifts and Donations were excluded from the mapping as they have no equivalent in the CPI basket.
+The sheet `categories_ipc_mapping` was created with the mapping between personal expense categories and INDEC IPC divisions. The categories Gifts and Donations were excluded from the mapping as they have no equivalent in the IPC basket.
 
 Finally, the sheet `ipc_gba` was created with data filtered for the GBA region and the analysis period, using the following query:
 ```
 =QUERY(ipc_indec_raw!A:H; "SELECT A,B,D,E,F WHERE H='GBA' AND D >= '202405' AND D <= '202511' AND A MATCHES '0[1-9]|1[0-2]'"; 1)
 ```
-The query simultaneously filters by GBA region, by the period May 2024 to November 2025, and by division codes 01 to 12 corresponding to the 12 divisions of the CPI basket. It is worth noting that the period values were stored as text when importing the CSV, which is why the comparison uses quotes instead of numbers. Recognizing and resolving this type of format inconsistency is part of the data cleaning process.
+The query simultaneously filters by GBA region, by the period May 2024 to November 2025, and by division codes 01 to 12 corresponding to the 12 divisions of the IPC basket. It is worth noting that the period values were stored as text when importing the CSV, which is why the comparison uses quotes instead of numbers. Recognizing and resolving this type of format inconsistency is part of the data cleaning process.
 - Spending distribution by category.  
 - Monthly spending evolution vs inflation.  
 - Categories exceeding spending limits.  
