@@ -1,60 +1,94 @@
 # Playbook: Personal Finance vs Inflation (2024–2025)
 
-## 🎯 Objectives
-The project aims to analyze personal expenses during 2024–2025 and compare them with official inflation data from Argentina (INDEC).  
-Key questions include:  
-- Which categories and subcategories show the highest spending growth?  
-- How does personal spending compare to official inflation rates?  
-- Are predefined spending limits respected?  
-- What adjustments could help mitigate the impact of inflation in the coming months?  
+## 🎯 Objective
+
+The project analyzes personal expenses recorded between May 2024 and November 2025, comparing them with official inflation data from INDEC, to answer one central question:
+
+**Did my personal spending keep pace with official inflation, or were there categories where the impact was significantly higher or lower than average?**
+
+From this question, the following analysis axes are derived:
+- Identify categories where spending grew above the official GBA inflation rate
+- Identify categories where spending remained below or in line with the CPI
+- Detect patterns that support financial protection decisions in future inflationary scenarios
 
 ---
 
 ## 🧩 Methodology
 
 ### 1. Preparation
-- **Data sources**:  
-  - Personal expenses for 2024 stored in monthly CSV files inside the folder `data/2024/`.  
-  - Personal expenses for 2025 stored in monthly CSV files inside the folder `data/2025/`.  
-  - Official CPI data from Argentina (INDEC) stored in `data/cpi_indec.csv`.  
-- **Storage and reproducibility**:  
-  - Raw data is kept in CSV format to ensure traceability.  
-  - Cleaned data is imported into Excel/Google Sheets (`analysis/finance_dashboard.xlsx`) to build pivot tables, charts, and interactive filters.  
-- **Initial decisions**:  
-  - April 2024 was excluded because it only contained two days of expenses.  
-  - *Total* was defined as the primary metric for all calculations.  
-  - Redundant columns (*Total Share*, *Share*) were removed to keep the focus on personal spending.  
 
-### 2. Process
-- **Anonymization of sensitive data**:  
-  - Specific values (names, merchants, payment methods) were replaced with generic terms to preserve privacy.  
-- **Column review and order**:  
-  - A standard column order was established to integrate them into the *master* sheet.  
-- **Text and spelling corrections**:  
-  - Categories and descriptions were adjusted to avoid typographical inconsistencies.  
-- **Handling missing or inconsistent data**:  
-  - Irrelevant records were removed.  
-  - Incomplete values were filled with estimates or marked as “NA”.  
-- **Duplicate detection and removal**:  
-  - Repeated records were filtered and consolidated as appropriate.  
-- **Format normalization**:  
-  - Dates standardized (DD/MM/YYYY).  
-  - Amounts homogenized with a single decimal separator.  
-  - Categories aligned with official CPI categories to enable comparisons.  
+**Data sources**
+- Personal expenses from 2024 in monthly CSV files inside the `data/2024/` folder
+- Personal expenses from 2025 in monthly CSV files inside the `data/2025/` folder
+- Official CPI data from INDEC, obtained from https://www.indec.gob.ar/ftp/cuadros/economia/serie_ipc_divisiones.csv and storaged inside the `data/indec/` folder
 
-### 3. Analysis
-- Descriptive analysis: spending by category, monthly evolution.  
-- Comparative analysis: expenses vs CPI inflation.  
-- Evaluation of compliance with spending limits.  
-- Projection: estimate future expenses adjusted for inflation.  
+**Storage and reproducibility**
+- Raw data is maintained in CSV format to ensure traceability
+- Cleaned data is integrated into Google Sheets (`analysis/finance_dashboard.xlsx`) to build pivot tables, charts, and interactive filters
 
-### 4. Visualization
-- Excel dashboard with pivot tables, charts, and slicers.  
-- Highlight key categories and trends.  
+**Initial decisions**
+- April 2024 was excluded as it contained only two days of expenses
+- *Total* was defined as the primary metric for all calculations
+- Redundant columns (*Total Share*, *Share*) were removed to maintain focus on personal spending
 
 ---
 
-## 📊 Results (to be completed)  
+### 2. Process
+
+**Anonymization of sensitive data**
+Specific values such as merchant names, personal descriptions, and payment methods were replaced with generic terms to preserve privacy without losing the granularity needed for analysis.
+
+To standardize the `Category` column to English, an auxiliary sheet `categories_lookup` was created with the Spanish-English mapping and the following formula was applied:
+```
+=ARRAYFORMULA(IF(D2:D=""; ""; VLOOKUP(D2:D; categories_lookup!A:B; 2; FALSE)))
+```
+The same approach was applied to the `Payment Method` column, using the `payment_method_lookup` sheet:
+```
+=ARRAYFORMULA(IF(E2:E=""; ""; VLOOKUP(E2:E; payment_method_lookup!A:B; 2; FALSE)))
+```
+
+**Column and structure review**
+To ensure consistency across monthly sheets, an auxiliary sheet was created to centralize column names from each month using the formula:
+```
+=TRANSPOSE(expense_history_may_2024!1:1)
+```
+This allowed visual comparison of the order and nomenclature of each sheet, making it easier to detect inconsistencies without navigating between them.
+
+**Normalization of the Total column**
+Data exported from Notion arrived in text format such as `ARS2,744.50`, including invisible characters (`CHAR(160)`, non-breaking space) that prevented operating with values as numbers. The following formula was applied to clean and convert each value:
+```
+=ARRAYFORMULA(IF(C2:C=""; ""; VALUE(SUBSTITUTE(TRIM(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(C2:C; CHAR(160); " "); "ARS"; ""); ","; "")); "."; ","))))
+```
+The transformation process was as follows: replacement of non-breaking spaces with normal spaces, removal of the "ARS" currency prefix, removal of the thousands comma in English format, removal of residual spaces with TRIM, conversion of the decimal point to comma for Argentine format compatibility, and final conversion of the text to a numeric value with VALUE.
+
+**Format standardization**
+Dates were standardized to DD/MM/YYYY format and amounts to a single decimal separator. Categories were aligned with the official CPI divisions to enable subsequent comparison.
+
+**Treatment of missing data**
+The following criteria were applied per affected column:
+- `Payment Method`: missing values were filled with "Cash"
+- `Description`: records without description were deleted
+- `Category`: the most appropriate category was assigned based on the context of the expense
+- `Total`: records without amount were deleted
+
+**Duplicate detection**
+Repeated records were filtered and consolidated where applicable.
+
+**INDEC data integration**
+
+The historical CPI series was downloaded from:
+```
+https://www.indec.gob.ar/ftp/cuadros/economia/serie_ipc_divisiones.csv
+```
+The file was imported as the sheet `ipc_indec_raw` within the main analysis file.
+
+The sheet `categories_ipc_mapping` was created with the mapping between personal expense categories and INDEC CPI divisions. The categories Gifts and Donations were excluded from the mapping as they have no equivalent in the CPI basket.
+
+Finally, the sheet `ipc_gba` was created with data filtered for the GBA region and the analysis period, using the following query:
+```
+=QUERY(ipc_indec_raw!A:H; "SELECT A,B,D,E,F WHERE H='GBA' AND D >= '202405' AND D <= '202511' AND A MATCHES '0[1-9]|1[0-2]'"; 1)
+```
+The query simultaneously filters by GBA region, by the period May 2024 to November 2025, and by division codes 01 to 12 corresponding to the 12 divisions of the CPI basket. It is worth noting that the period values were stored as text when importing the CSV, which is why the comparison uses quotes instead of numbers. Recognizing and resolving this type of format inconsistency is part of the data cleaning process.
 - Spending distribution by category.  
 - Monthly spending evolution vs inflation.  
 - Categories exceeding spending limits.  
@@ -65,10 +99,4 @@ Key questions include:
 ## ✅ Conclusions (to be completed)  
 - Key insights about personal spending behavior.  
 - Impact of inflation on different categories.  
-- Recommendations for financial adjustments.  
-
----
-
-## 🚀 Next Steps  
-- Scale analysis to Power BI for interactive dashboards.  
-- Extend methodology to other datasets (e.g., household or industry benchmarks).  
+- Recommendations for financial adjustments.    
