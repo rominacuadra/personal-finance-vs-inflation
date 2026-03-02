@@ -20,11 +20,11 @@ From this question, the following analysis axes are derived:
 **Data sources**
 - Personal expenses from 2024 in monthly CSV files inside the `data/2024/` folder.
 - Personal expenses from 2025 in monthly CSV files inside the `data/2025/` folder.
-- Official IPC data from INDEC, obtained from https://www.indec.gob.ar/ftp/cuadros/economia/serie_ipc_divisiones.csv and storaged inside the [`data/indec/serie_ipc_divisiones.csv`](data/indec/serie_ipc_divisiones.csv).
+- Official IPC data from INDEC, obtained from https://www.indec.gob.ar/ftp/cuadros/economia/serie_ipc_divisiones.csv and storaged inside the [`data/indec/serie_ipc_divisiones.csv`](../data/indec/serie_ipc_divisiones.csv).
 
 **Storage and reproducibility**
 - Raw data is maintained in CSV format to ensure traceability.
-- Cleaned data is integrated into Google Sheets [`analysis/finance_dashboard.xlsx`](analysis/finance_dashboard.xlsx) to build pivot tables, charts, and interactive filters.
+- Cleaned data is integrated into Google Sheets [`analysis/finance_dashboard.xlsx`](../analysis/finance_dashboard.xlsx) to build pivot tables, charts, and interactive filters.
 
 **Initial decisions**
 - April 2024 was excluded as it contained only two days of expenses.
