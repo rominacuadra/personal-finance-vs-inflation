@@ -1,30 +1,30 @@
-# personal-finance-vs-inflation
+# Personal Finance vs Inflation (Argentina 2024–2025)
 
 ## 🎯 Objective
-Analyze personal expenses during 2024–2025 and compare them with official inflation data from Argentina (INDEC – National Institute of Statistics and Censuses). The goal is to understand spending patterns, inflation impact by category, and compliance with predefined limits to provide actionable financial insights.
+Analysis of personal expenses between May 2024 and November 2025, compared against official IPC data from INDEC (Argentina's National Institute of Statistics and Censuses).
+
+**Core question: Did my personal spending keep pace with official inflation, or were there categories where the impact was significantly higher or lower?**
 
 ## 📂 Repository Structure
-- `data/`: anonymized datasets and external CPI data.
-- `analysis/`: Excel dashboards and notebooks.
-- `docs/`: narrative documentation and visuals.
-- `scripts/`: Python scripts for cleaning, projection, and comparison.
-- `README.md`: general project overview.
+```
+data/
+  2024/        # Monthly expense CSVs (anonymized)
+  2025/        # Monthly expense CSVs (anonymized)
+  indec/       # Official CPI data from INDEC
+analysis/
+  finance_dashboard.xlsx   # Main analysis file (Google Sheets)
+docs/
+  playbook.md  # Full methodology and technical decisions
+```
 
 ## 🧩 Methodology
-1. Data cleaning and normalization.
-2. Exploratory analysis (Excel/Python).
-3. Comparison with official CPI categories.
-4. Evaluation of spending limits.
-5. Projection of expenses adjusted for inflation.
+1. Data cleaning and normalization of personal expense records exported from Notion
+2. Category mapping between personal expenses and official INDEC IPC divisions
+3. Monthly comparison of spending growth vs official inflation by category
+4. Identification of categories above and below the IPC average
 
-## 📊 Expected Deliverables
-- Excel dashboard with:
-  - Spending by category and subcategory.
-  - Monthly evolution.
-  - Comparison with inflation.
-  - Spending limits compliance.
-- Narrative Playbook (`playbook.md`) with conclusions and next steps.
+## 🛠️ Tools
+Google Sheets  · INDEC public data
 
-## 🚀 Next Steps
-- Scale analysis to Power BI for interactive dashboards.
-- Publish case study in Notion for narrative presentation.
+## 📄 Documentation
+Full methodology, formulas, and decisions are documented in [`playbook.md`](docs/playbook.md).
