@@ -103,6 +103,15 @@ The following formula was applied to clean and convert each value:
 ={FILTER(expense_history_may_2024!A2:E;LEN(expense_history_may_2024!A2:A)>0);FILTER(expense_history_june_2024!A2:E;LEN(expense_history_june_2024!A2:A)>0);FILTER(...))>0)}
 ```
 
+Two calculated columns were added to the master sheet. `Category IPC` maps each personal expense category to its corresponding INDEC CPI division using a VLOOKUP against the `categories_ipc_mapping` sheet:
+```
+=VLOOKUP(D2; categories_ipc_mapping!A:B; 2; FALSE)
+```
+`Period` extracts the year and month from the date column in YYYYMM format to match the period structure used in the `ipc_gba` table, enabling the join between both datasets:
+```
+=TEXT(A2; "YYYYMM")
+```
+
 ---
 
 ## ✅ Conclusions (to be completed)  
