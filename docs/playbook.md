@@ -48,7 +48,7 @@ The same approach was applied to the `Payment Method` column, using the `payment
 ```
 
 **Column and structure review**
-To ensure consistency across monthly sheets, an auxiliary sheet was created to centralize column names from each month using the formula:
+To ensure consistency across monthly sheets before integrating them into the `master` sheet, an auxiliary sheet was created to centralize column names from each month using the following formula:
 ```
 =TRANSPOSE(expense_history_may_2024!1:1)
 ```
@@ -93,6 +93,15 @@ The query simultaneously filters by GBA region, by the period May 2024 to Novemb
 - Monthly spending evolution vs inflation.  
 - Categories exceeding spending limits.  
 - Projection of next month’s expenses.  
+
+**Master sheet**
+A `master` sheet was created to consolidate all monthly records into a single table.
+QUERY was discarded because it mishandles date columns in combined arrays. FILTER with `LEN() > 0` was used instead, as it checks for content regardless of data type.
+
+The following formula was applied to clean and convert each value:
+```
+={FILTER(expense_history_may_2024!A2:E;LEN(expense_history_may_2024!A2:A)>0);FILTER(expense_history_june_2024!A2:E;LEN(expense_history_june_2024!A2:A)>0);FILTER(...))>0)}
+```
 
 ---
 
