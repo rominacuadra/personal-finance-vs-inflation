@@ -71,3 +71,10 @@
 - Legend: visible, positioned at top
 - Axis labels: visible on both axes
 - Grid lines: light gray
+
+## 📊 KPI Scorecards
+
+- My Expenses Growth: background `#F1C40F` (yellow), text `#000000`
+- Official CPI Growth: background `#E67E22` (orange), text `#000000`
+- Under Inflation By: background `#27AE60` (green), text `#FFFFFF`
+```

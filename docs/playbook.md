@@ -114,7 +114,7 @@ Two calculated columns were added to the master sheet. `Category IPC` maps each 
 
 ---
 
-### 2. Analysis
+### 3. Analysis
 
 **Monthly variation analysis - discarded**
 A first approach compared the month-over-month variation of personal expenses against the official CPI monthly variation (`cpi_monthly_var`). While the IPC showed a stable and declining trend between 4% and 2% throughout the period, personal expenses showed extreme volatility due to irregular large purchases in certain months. This made the comparison misleading and not representative of the actual inflation impact.
