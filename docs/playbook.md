@@ -117,9 +117,25 @@ Two calculated columns were added to the master sheet. `Category IPC` maps each 
 ### 2. Analysis
 
 **Monthly variation analysis - discarded**
-A first approach compared the month-over-month variation of personal expenses against the official CPI monthly variation (`v_m_IPC`). While the IPC showed a stable and declining trend between 4% and 2% throughout the period, personal expenses showed extreme volatility due to irregular large purchases in certain months. This made the comparison misleading and not representative of the actual inflation impact.
+A first approach compared the month-over-month variation of personal expenses against the official CPI monthly variation (`cpi_monthly_var`). While the IPC showed a stable and declining trend between 4% and 2% throughout the period, personal expenses showed extreme volatility due to irregular large purchases in certain months. This made the comparison misleading and not representative of the actual inflation impact.
 
 This approach was discarded in favor of cumulative growth indexing, which smooths out monthly spikes and provides a more honest comparison over the full period.
+
+**Cumulative growth index**
+To enable a meaningful comparison between personal expenses and official inflation over the full period, both series were reindexed to a common base of 100 in May 2024.
+
+The personal expenses index (`My Expenses Index`) was calculated as follows:
+- Base value of 100 in May 2024
+- Each subsequent month: `(current_month_total / previous_month_total) * previous_index`
+
+The official IPC index (`Official IPC Index`) was obtained from the `Indice_IPC` column in the INDEC dataset and reindexed to May 2024 = 100 using:
+```
+=F2/$F$2*100
+```
+
+Both indexes were combined in a combo chart (bar + reference line) showing monthly evolution from May 2024 to November 2025, with a reference line at 100 to clearly mark the starting point.
+
+**Key finding:** By November 2025, personal expenses grew 58% from the May 2024 baseline, while the official CPI grew 63% over the same period. This means personal spending remained slightly below the official inflation rate across the full period, though significant volatility was observed in individual months, particularly a sharp drop in October 2025 followed by a strong recovery in November 2025.
 
 ## ✅ Conclusions (to be completed)  
 - Key insights about personal spending behavior.  
