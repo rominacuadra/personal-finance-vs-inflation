@@ -14,7 +14,8 @@ data/
 analysis/
   finance_dashboard.xlsx   # Main analysis file (Google Sheets)
 docs/
-  playbook.md  # Full methodology and technical decisions
+  playbook.md        # Full methodology and technical decisions
+  STYLE_GUIDE.md     # Design and naming conventions
 ```
 
 ## 🧩 Methodology
@@ -24,7 +25,9 @@ docs/
 4. Identification of categories above and below the IPC average
 
 ## 🛠️ Tools
-Google Sheets  · INDEC public data
+Google Sheets · INDEC public data
 
 ## 📄 Documentation
 Full methodology, formulas, and decisions are documented in [`playbook.md`](docs/playbook.md).
+Design and naming conventions are documented in [`STYLE_GUIDE.md`](docs/STYLE_GUIDE.md).
+```
