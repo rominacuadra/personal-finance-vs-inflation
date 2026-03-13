@@ -1,6 +1,6 @@
 # Playbook: Personal Finance vs Inflation (2024–2025)
 
-## 🎯 Objective
+## Objective
 
 The project analyzes personal expenses recorded between May 2024 and November 2025, comparing them with official inflation data from INDEC, to answer one central question:
 
@@ -13,131 +13,120 @@ From this question, the following analysis axes are derived:
 
 ---
 
-## 🧩 Methodology
+## Methodology
 
 ### 1. Preparation
 
 **Data sources**
-- Personal expenses from 2024 in monthly CSV files inside the `data/2024/` folder.
-- Personal expenses from 2025 in monthly CSV files inside the `data/2025/` folder.
-- Official IPC data from INDEC, obtained from https://www.indec.gob.ar/ftp/cuadros/economia/serie_ipc_divisiones.csv and storaged inside the [`data/indec/serie_ipc_divisiones.csv`](../data/indec/serie_ipc_divisiones.csv).
+- Personal expenses from 2024 and 2025 in monthly CSV files exported from Notion, stored in `data/2024/` and `data/2025/`.
+- Official IPC data from INDEC, stored in `data/indec/serie_ipc_divisiones.csv`.
 
 **Storage and reproducibility**
 - Raw data is maintained in CSV format to ensure traceability.
-- Cleaned data is integrated into Google Sheets [`analysis/finance_dashboard.xlsx`](../analysis/finance_dashboard.xlsx) to build pivot tables, charts, and interactive filters.
+- Cleaned data is integrated into Google Sheets `analysis/finance_dashboard.xlsx` to build pivot tables, charts, and KPIs.
 
 **Initial decisions**
 - April 2024 was excluded as it contained only two days of expenses.
-- *Total* was defined as the primary metric for all calculations.
-- Redundant columns (*Total Share*, *Share*) were removed to maintain focus on personal spending.
+- `Total` was defined as the primary metric for all calculations.
+- Redundant columns (`Total Share`, `Share`) were removed to maintain focus on personal spending.
 
 ---
 
 ### 2. Process
 
-**Anonymization of sensitive data**
-Specific values such as merchant names, personal descriptions, and payment methods were replaced with generic terms to preserve privacy without losing the granularity needed for analysis.
+**Anonymization**
+Specific values such as merchant names and personal descriptions were replaced with generic terms to preserve privacy without losing analytical granularity.
 
-To standardize the `Category` column to English, an auxiliary sheet `categories_lookup` was created with the Spanish-English mapping and the following formula was applied:
-```
-=ARRAYFORMULA(IF(D2:D=""; ""; VLOOKUP(D2:D; categories_lookup!A:B; 2; FALSE)))
-```
-The same approach was applied to the `Payment Method` column, using the `payment_method_lookup` sheet:
-```
-=ARRAYFORMULA(IF(E2:E=""; ""; VLOOKUP(E2:E; payment_method_lookup!A:B; 2; FALSE)))
-```
+**Column standardization**
+Categories and payment methods were translated to English using lookup sheets (`categories_lookup`, `payment_method_lookup`) and VLOOKUP formulas applied via ARRAYFORMULA across each monthly sheet.
 
-**Column and structure review**
-To ensure consistency across monthly sheets before integrating them into the `master` sheet, an auxiliary sheet was created to centralize column names from each month using the following formula:
-```
-=TRANSPOSE(expense_history_may_2024!1:1)
-```
-This allowed visual comparison of the order and nomenclature of each sheet, making it easier to detect inconsistencies without navigating between them.
+**Column consistency check**
+An auxiliary sheet was created to centralize and compare column names across all 19 monthly sheets using TRANSPOSE, enabling visual detection of inconsistencies without navigating between sheets.
 
 **Normalization of the Total column**
-Data exported from Notion arrived in text format such as `ARS2,744.50`, including invisible characters (`CHAR(160)`, non-breaking space) that prevented operating with values as numbers. The following formula was applied to clean and convert each value:
-```
-=ARRAYFORMULA(IF(C2:C=""; ""; VALUE(SUBSTITUTE(TRIM(SUBSTITUTE(SUBSTITUTE(SUBSTITUTE(C2:C; CHAR(160); " "); "ARS"; ""); ","; "")); "."; ","))))
-```
-The transformation process was as follows: replacement of non-breaking spaces with normal spaces, removal of the "ARS" currency prefix, removal of the thousands comma in English format, removal of residual spaces with TRIM, conversion of the decimal point to comma for Argentine format compatibility, and final conversion of the text to a numeric value with VALUE.
+Data exported from Notion arrived as text with invisible characters and currency prefixes (e.g. `ARS2,744.50`). A cleaning formula using SUBSTITUTE, TRIM, and VALUE was applied to convert each value to a usable number.
 
-**Format standardization**
-Dates were standardized to DD/MM/YYYY format and amounts to a single decimal separator. Categories were aligned with the official IPC divisions to enable subsequent comparison.
-
-**Treatment of missing data**
-The following criteria were applied per affected column:
-- `Payment Method`: missing values were filled with "Cash"
+**Missing data treatment**
+- `Payment Method`: filled with "Cash"
 - `Description`: records without description were deleted
-- `Category`: the most appropriate category was assigned based on the context of the expense
+- `Category`: assigned based on expense context
 - `Total`: records without amount were deleted
 
-**Duplicate detection**
-Repeated records were filtered and consolidated where applicable.
-
 **INDEC data integration**
-
-The historical IPC series was downloaded from:
-```
-https://www.indec.gob.ar/ftp/cuadros/economia/serie_ipc_divisiones.csv
-```
-The file was imported as the sheet `ipc_indec_raw` within the main analysis file.
-
-The sheet `categories_ipc_mapping` was created with the mapping between personal expense categories and INDEC IPC divisions. The categories Gifts and Donations were excluded from the mapping as they have no equivalent in the IPC basket.
-
-Finally, the sheet `ipc_gba` was created with data filtered for the GBA region and the analysis period, using the following query:
-```
-=QUERY(ipc_indec_raw!A:H; "SELECT A,B,D,E,F WHERE H='GBA' AND D >= '202405' AND D <= '202511' AND A MATCHES '0[1-9]|1[0-2]'"; 1)
-```
-The query simultaneously filters by GBA region, by the period May 2024 to November 2025, and by division codes 01 to 12 corresponding to the 12 divisions of the IPC basket. It is worth noting that the period values were stored as text when importing the CSV, which is why the comparison uses quotes instead of numbers. Recognizing and resolving this type of format inconsistency is part of the data cleaning process.
-- Spending distribution by category.  
-- Monthly spending evolution vs inflation.  
-- Categories exceeding spending limits.  
-- Projection of next month’s expenses.  
+The historical IPC series was imported as the sheet `ipc_indec_raw`. A mapping sheet `categories_ipc_mapping` was created to link personal categories to INDEC divisions. The sheet `ipc_gba` was built using a QUERY that filters by GBA region, the analysis period (202405–202511), and division codes 01–12. Period values were stored as text in the original CSV, so comparisons use quoted strings rather than numbers.
 
 **Master sheet**
-A `master` sheet was created to consolidate all monthly records into a single table.
-QUERY was discarded because it mishandles date columns in combined arrays. FILTER with `LEN() > 0` was used instead, as it checks for content regardless of data type.
-
-The following formula was applied to clean and convert each value:
-```
-={FILTER(expense_history_may_2024!A2:E;LEN(expense_history_may_2024!A2:A)>0);FILTER(expense_history_june_2024!A2:E;LEN(expense_history_june_2024!A2:A)>0);FILTER(...))>0)}
-```
-
-Two calculated columns were added to the master sheet. `Category IPC` maps each personal expense category to its corresponding INDEC CPI division using a VLOOKUP against the `categories_ipc_mapping` sheet:
-```
-=VLOOKUP(D2; categories_ipc_mapping!A:B; 2; FALSE)
-```
-`Period` extracts the year and month from the date column in YYYYMM format to match the period structure used in the `ipc_gba` table, enabling the join between both datasets:
-```
-=TEXT(A2; "YYYYMM")
-```
+All 19 monthly sheets were consolidated into a single `master` sheet using FILTER with `LEN() > 0`, which correctly handles date columns unlike QUERY. Two calculated columns were added: `ipc_category` (maps each expense to its INDEC division via VLOOKUP) and `period` (extracts YYYYMM from the date column to enable joins with `ipc_gba`).
 
 ---
 
 ### 3. Analysis
 
-**Monthly variation analysis - discarded**
-A first approach compared the month-over-month variation of personal expenses against the official CPI monthly variation (`cpi_monthly_var`). While the IPC showed a stable and declining trend between 4% and 2% throughout the period, personal expenses showed extreme volatility due to irregular large purchases in certain months. This made the comparison misleading and not representative of the actual inflation impact.
-
-This approach was discarded in favor of cumulative growth indexing, which smooths out monthly spikes and provides a more honest comparison over the full period.
+**Monthly variation — discarded**
+A first approach compared month-over-month variation of personal expenses against the official CPI monthly variation. While the IPC showed a stable declining trend between 4% and 2%, personal expenses showed extreme volatility due to irregular large purchases. This made the comparison misleading and was discarded.
 
 **Cumulative growth index**
-To enable a meaningful comparison between personal expenses and official inflation over the full period, both series were reindexed to a common base of 100 in May 2024.
+Both series were reindexed to a common base of 100 in May 2024 to enable meaningful comparison over the full period.
 
-The personal expenses index (`My Expenses Index`) was calculated as follows:
-- Base value of 100 in May 2024
-- Each subsequent month: `(current_month_total / previous_month_total) * previous_index`
-
-The official IPC index (`Official IPC Index`) was obtained from the `Indice_IPC` column in the INDEC dataset and reindexed to May 2024 = 100 using:
+The personal expenses index starts at 100 in May 2024. Each subsequent month is calculated as:
 ```
-=F2/$F$2*100
+(current_month_total / previous_month_total) * previous_index
 ```
 
-Both indexes were combined in a combo chart (bar + reference line) showing monthly evolution from May 2024 to November 2025, with a reference line at 100 to clearly mark the starting point.
+The official IPC index uses the raw INDEC index value (`ipc_index_raw`) reindexed to May 2024 = 100:
+```
+ipc_index_raw_current_month / ipc_index_raw_may_2024 * 100
+```
 
-**Key finding:** By November 2025, personal expenses grew 58% from the May 2024 baseline, while the official CPI grew 63% over the same period. This means personal spending remained slightly below the official inflation rate across the full period, though significant volatility was observed in individual months, particularly a sharp drop in October 2025 followed by a strong recovery in November 2025.
+The same indexing logic was applied at category level, using the monthly expenses pivot table as the source for personal spending and INDEX/MATCH against `ipc_gba` for the official IPC per division.
 
-## ✅ Conclusions (to be completed)  
-- Key insights about personal spending behavior.  
-- Impact of inflation on different categories.  
-- Recommendations for financial adjustments.    
+**Key finding:** By November 2025, personal expenses grew 58% from the May 2024 baseline, while the official CPI grew 63% over the same period. Personal spending remained slightly below the official inflation rate across the full period.
+
+**Category-level analysis**
+The final index value for each category in November 2025 was compared against the corresponding IPC division index. Out of 10 categories analyzed, 3 exceeded inflation (Food, Housing, and Restaurants) and 7 remained below it. The difference between each category's personal index and IPC index was calculated to quantify the gap.
+
+---
+
+### 4. Visualization
+
+**KPI Scorecards — Overall performance**
+Three scorecards summarize the overall result:
+- `My Expenses Growth`: +58.8% (personal index from May 2024 to Nov 2025)
+- `Official CPI Growth`: +63.1% (official IPC index same period)
+- `Under Inflation By`: 4.3% (difference between the two)
+
+**KPI Scorecards — Category highlights**
+Two additional scorecards highlight the most extreme categories:
+- `Biggest Overspend Category`: Housing, water, electricity, gas and other fuels
+- `Biggest Underspend Category`: Miscellaneous goods and services
+
+**Chart 1 — Personal Expenses vs IPC Inflation Index (Base 100 = May 2024)**
+A combo chart showing monthly evolution of both indexes from May 2024 to November 2025, with a reference line at 100. This chart communicates how closely personal spending tracked official inflation over time and highlights months of significant divergence.
+
+**Chart 2 — Personal vs IPC Index by Category (May 2024 – Nov 2025)**
+A horizontal bar chart comparing the final index value of personal spending against the official IPC for each of the 10 categories. This chart reveals which categories drove spending above or below inflation and makes Housing's outsized impact immediately visible.
+
+**Chart 3 — Spending vs Inflation Gap by Category (May 2024 – Nov 2025)**
+A bar chart showing the difference between the personal index and the IPC index for each category. Positive values indicate spending above inflation, negative values below. This chart directly answers the project's central question at category level.
+
+---
+
+## Conclusions
+
+**1. Overall spending remained below inflation**
+Across the full 19-month period, personal expenses grew 58.8% while the official GBA CPI grew 63.1%. This means spending was effectively 4.3 percentage points below official inflation, which is a positive result in a high-inflation context. However, this aggregate result masks significant variation across categories.
+
+**2. Housing was the dominant inflation driver**
+Housing, water, electricity, gas and other fuels reached an index of 769 by November 2025, compared to an official IPC of 203 for the same division. This means personal housing costs grew nearly 4 times faster than the official rate for that category. This likely reflects a combination of rent increases, utility tariff adjustments, and the weight of this category in the overall budget. It is the single most important finding of the analysis.
+
+**3. Food spending also exceeded inflation**
+Food and non-alcoholic beverages reached a personal index of 226 against an official IPC of 150. Spending in this category grew approximately 50% more than the official rate, suggesting either a shift toward more expensive products, higher consumption volume, or both. In a persistent inflationary environment, food is typically one of the hardest categories to compress.
+
+**4. Discretionary and variable categories were compressed**
+Categories such as Clothing (2.59 vs 137.75), Miscellaneous goods and services (23.24 vs 161.88), and Furnishings (60.79 vs 139.61) show personal indexes far below their official IPC counterparts. This suggests that spending in these categories was actively reduced or deferred, likely as an adaptive response to inflationary pressure in essential categories like housing and food.
+
+**5. Limitations of the dataset**
+The analysis covers 19 months starting in May 2024. The absence of data prior to this date limits the ability to establish a longer baseline or contextualize the findings within the broader inflationary cycle that Argentina experienced from 2022 onward. Additionally, categories such as Gifts and Donations were excluded from the IPC comparison as they have no equivalent in the official basket, which means total spending and the IPC are not fully comparable at the aggregate level.
+
+**6. Implications for financial planning**
+The analysis suggests a pattern of unconscious adaptation: essential spending (housing, food) absorbed inflation or exceeded it, while discretionary spending was compressed. A conscious financial strategy for a high-inflation environment would involve monitoring housing costs closely, given their disproportionate impact, and identifying whether the compression in discretionary categories reflects genuine choice or financial constraint.
